@@ -1,6 +1,6 @@
 # Fast-API Course by Sanjeev Thiyagarajan
 
-[![Watch the video](https://img.youtube.com/vi/https://www.youtube.com/watch?v=0sOvCWFmrtA/hqdefault.jpg)](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=605s)
+[![Watch the video](https://img.youtube.com/vi/https://www.youtube.com/watch?v=0sOvCWFmrtA/default.jpg)](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=605s)
 
 ## Course Overview
 
