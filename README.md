@@ -25,7 +25,7 @@ We'll build a full-fledged API in Python using **FastAPI**. We'll also learn the
 - [34:17](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=2057s) Install dependencies w/ pip
 - [36:21](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=2181s) Starting FastAPI
 - [39:23](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=2363s) Path Operations
-- [53:22](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=3202s) Intro `toman`
+- [53:22](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=3202s) Intro `postman`
 - [57:34](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=3454s) HTTP Requests
 - [1:07:29](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=4049s) Schema Validation with Pydantic
 - [1:22:45](https://www.youtube.com/watch?v=0sOvCWFmrtA&t=4965s) CRUD Operations
