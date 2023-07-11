@@ -155,3 +155,78 @@ Change default status code by supplying the `status_code` parameter.
 ```python
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 ```
+
+## Automatic Documentation
+
+FastAPI automatically generates documentation for all the endpoints.
+
+- Swagger UI: `http://{host}:{port}/docs`
+- ReDoc: `http://{host}:{port}/redoc`
+
+## Database
+
+Database is a collection of organised data that can be easily accessed and managed.
+
+We don't work or interact with databases directly. Instead, we use a Database Management System (DBMS) to interact with the database.
+
+<img src="images/dbms.png" width=800>
+
+Popular DBMS:
+
+|Type|DBMS|
+|:-:|:-:|
+|Relational|MySQL, PostgreSQL, Oracle, SQL Server|
+|NoSQL|MongoDB, DynamoDB, Oracle, SQL Server|
+
+**Postgres**: Each instance of `postgres` can be carved into multiple separate databases.
+
+- By default, every `postgres` installation comes with one database already created called `postgres`.
+- This is important because `postgres` requires you to specify the name of the database to make a connection. So there needs to be always one database.
+
+Postgres DataTypes:
+
+|Data Type|Postgres|Python|
+|:-|:-|:-|
+|Numeric|`int`, `decimal`, `precision`|`int`, `float`|
+|Text|`varchar`, `text`|`str`|
+|Boolean|`bool`|`bool`|
+|Sequence|`array`|`list`|
+
+For `postgres`, if you want to return a newly created/updated item, you need to use `RETURNING` keyword.
+
+```sql
+INSERT INTO products (name, price, inventory)
+VALUES ('RTX-4070', 1000, 10), ('RTX-4080', 1500, 10)
+RETURNING *;
+```
+
+## Recap of Concepts
+
+**Primary Key** is a column or group of columns that uniquely identifies each row in a table. A table can have one and only one primary key.
+
+- The primary key does not have to be the `id` column. It's up to you to decide which column uniquely defines each record.
+- In the below example, since an email can only be registered once, the email column can also be used as the primary key.
+
+<img src="images/primary_key.png" width=800>
+
+**UNIQUE** constraint can be applied to any column to make sure every record has a unique value for that column.
+
+<img src="images/unique_constraint.png" width=800>
+
+**NULL** constraint: by default, when adding a new entry to a database, any column can be left blank. When a column is left blank, it has a `null` value. If you need column to be properly filled in to create a new record, a **NOT NULL** constraint can be applied to the column to ensure that the column is never left blank.
+
+<img src="images/null_constraint.png" width=800>
+
+## Connecting to Postgres Using Python
+
+We'll use `psycopg2` library to connect to `postgres` database. `psycopg2` is the most popular PostgreSQL database adapter for the Python programming language.
+
+**IMPORTANT**: In order to avoid `sql injection` attacks, we should never use string concatenation / f-string to build SQL queries. Instead, we should use parameterised queries (also known as **prepared statements** with variable binding) with the `%` operator when using user-supplied data. Read more about this [here](https://help.securityjourney.com/en/articles/6719498-python-string-formatting-and-sql-injection-attacks).
+
+```python
+# DO THIS
+cursor.execute("INSERT INTO posts (title, content, published) VALUES (%s, %s, %s)", (post.title, post.content, post.published))
+
+# DO NOT DO THIS
+cursor.execute(f"INSERT INTO posts (title, content, published) VALUES ({post.title}, {post.content}, {post.published})")
+```
