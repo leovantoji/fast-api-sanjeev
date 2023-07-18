@@ -659,7 +659,7 @@ heroku login
 **Step 2**: Create a heroku app. The app name is global so it has to be unique.
 
 ```bash
-heroku create [APP_NAME]
+heroku create <APP_NAME>
 ```
 
 **Step 3**: Create a `Procfile` file in the main directory. This file tells Heroku how to run the app. The inside of the `Procfile` may look like below. `heroku` will always assign an environment variable called `PORT` to the app. We can use this variable to tell `uvicorn` which port to run on.
@@ -667,3 +667,16 @@ heroku create [APP_NAME]
 ```Procfile
 web: uvicorn app.main:app --host=0.0.0.0 --port=${PORT:-5000}
 ```
+
+**Step 4**: Provision a `postgres` database for the app.
+
+```bash
+heroku addons:create heroku-postgresql:<PLAN_NAME>
+```
+
+**Useful `heroku` commands**:
+
+- `heroku apps:info <APP_NAME>` to view app info.
+- `heroku logs` to view logs for debugging purpose.
+- `heroku ps:restart` to restart application.
+- `heroku run <COMMAND>` to run a one-off process inside a `heroku` dyno.
