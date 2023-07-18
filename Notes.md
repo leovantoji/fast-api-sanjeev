@@ -645,3 +645,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 ```
+
+## Section 13: Deployment to Heroku (NO LONGER FREE)
+
+[Refer to Heroku Documentation](https://devcenter.heroku.com/articles/getting-started-with-python#clone-the-app)
+
+**Step 1**: Login to `heroku`
+
+```bash
+heroku login
+```
+
+**Step 2**: Create a heroku app. The app name is global so it has to be unique.
+
+```bash
+heroku create [APP_NAME]
+```
+
+**Step 3**: Create a `Procfile` file in the main directory. This file tells Heroku how to run the app. The inside of the `Procfile` may look like below. `heroku` will always assign an environment variable called `PORT` to the app. We can use this variable to tell `uvicorn` which port to run on.
+
+```Procfile
+web: uvicorn app.main:app --host=0.0.0.0 --port=${PORT:-5000}
+```
