@@ -20,6 +20,12 @@ Disadvantages of using `venv`:
 - If you use `.venv` as the directory name, be aware that VS Code may not be able to locate your Python interpreter. You may have to switch to “venv” to make that happen.
 - You’ll need to add `.venv` or `venv` to your `.gitignore` file if you use `git`.
 
+To activate an existing `venv`:
+
+```bash
+source venv/bin/activate
+```
+
 ## Section 3: FastAPI
 
 ### Path Operations (Route - Other Frameworks)
@@ -680,3 +686,120 @@ heroku addons:create heroku-postgresql:<PLAN_NAME>
 - `heroku logs` to view logs for debugging purpose.
 - `heroku ps:restart` to restart application.
 - `heroku run <COMMAND>` to run a one-off process inside a `heroku` dyno.
+
+More about deploying FastAPI:
+
+- [Choosing the right `heroku` plan](https://devcenter.heroku.com/articles/heroku-postgres-plans)
+- [Deploying FastAPI](https://fastapi.tiangolo.com/deployment/concepts/)
+
+## Section 14: Deployment on a Ubuntu VM
+
+### DigitalOcean
+
+Create a `Droplet` on `DigitalOcean` so we can have a VM to deploy our app.
+
+We can `ssh` into our `Droplet` by using `ssh root@<DROPLET_IP_ADDRESS>`.
+
+[Read more about how to connect to Droplets with SSH](https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/)
+
+Generally, when we have a `ubuntu` VM, we want to install all the updates first
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+We will need to install `python3`, `pip3`, `postgresql` and `postgresql-contrib` on the VM. For a `ubuntu` machine, the default user for `postgres` is `postgres`, and the default settings doesn't allow any other users except for `postgres` to access the database. We'll need to change the settings so we can access the database with other users.
+
+```bash
+su - postgres # to switch to postgres user
+cd /etc/postgresql/<version>/main # to go to the postgresql config folder
+sudo nano postgresql.conf # to edit the config file
+sudo nano pg_hba.conf # to edit the config file
+```
+
+We should definitely create a new user instead of using `root`.
+
+```bash
+adduser <username> # create <username>
+usermod -aG sudo <username> # give <username> sudo access
+su - <username> # to switch to <username>
+```
+
+Add the following command to `.profile` in the virtual machine to persist all environment variables even after a reboot.
+
+```bash
+set -o allexport; source /home/toji2/.env; set +o allexport
+```
+
+To change password of a user:
+
+```bash
+sudo passwd <username>
+```
+
+If we want to access the app:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0
+```
+
+If we want to app to run in the background in the `ubuntu` VM, we'll need to create a service. We can create a service by creating a `.service` file in `/etc/systemd/system/`. In our case, we'll have a `gunicorn.service` file.
+
+```bash
+[Unit]
+Description=gunicorn instance to server api
+After=network.target
+
+[Service]
+User=username
+Group=username
+WorkingDirectory=/home/username/app/src/
+Environment="PATH=/home/username/app/venv/bin"
+EnvironmentFile=/home/username/.env
+ExecStart=/home/username/app/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target
+```
+
+To ensure that the service restarts upon a reboot, we'll need to enable the service.
+
+```bash
+sudo systemctl enable gunicorn
+```
+
+### NGINX
+
+We usually have an intermediary high performance web server that can act as a proxy. It can also handle SSL termination. `nginx` is a common web server.
+
+<img src="images/nginx.png" width=800>
+
+Install `nginx`:
+```bash
+sudo apt install nginx
+```
+
+Start `nginx.service`:
+
+```bash
+systemctl start nginx
+```
+
+Use `certbot` to configure `nginx` for SSL connection.
+
+Reading resources:
+
+- [Certbot Instructions](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal). The result is an updated `/etc/nginx/sites-available/default`file.
+- [Point to DigitalOcean Nameservers From Common Domain Registrars](https://docs.digitalocean.com/tutorials/dns-registrars/)
+
+We also want to setup a firewall to only allow the ports we need. We can use `ufw` to do this.
+
+- `sudo ufw status`: Check firewall status.
+- `sudo ufw allow http`: Allow HTTP traffic.
+- `sudo ufw allow https`: Allow HTTPS traffic.
+- `sudo ufw allow ssh`: Allow SSH traffic.
+- `sudo ufw allow <port_number>`: Allow traffic on a specific port.
+- `sudo ufw enable`: Enable firewall.
+- `sudo ufw delete allow <rule>`: Delete a specific rule.
+
+## Section 15: Docker
