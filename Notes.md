@@ -803,3 +803,47 @@ We also want to setup a firewall to only allow the ports we need. We can use `uf
 - `sudo ufw delete allow <rule>`: Delete a specific rule.
 
 ## Section 15: Docker
+
+[Alpine, Slim, Stretch, Buster, Jessie, Bullseye - Which docker image should I choose?](https://levelup.gitconnected.com/alpine-slim-stretch-bookworm-bullseye-buster-jessie-which-docker-image-should-i-choose-500f8c15c8cf)
+
+Let's do a course by Nana about Docker! [Docker from Zero to Hero](https://www.youtube.com/watch?v=3c-iBn73dDE)
+
+## Section 16: Testing with `pytest`
+
+[Good practices](https://docs.pytest.org/en/7.2.x/explanation/goodpractices.html)
+
+Recap of concepts like:
+
+- `pytest.fixture`
+- `pytest.mark.parametrize`
+- `pytest.raises`
+
+We can use `TestClient` to test FastAPI applications. `TestClient()` object can be used the same as a `requests` object.
+
+```python
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+app = FastAPI()
+
+@app.get("/")
+async def read_main():
+    return {"message": "hello world"}
+
+client = TestClient(app)
+
+def test_read_main():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "hello world"}
+```
+
+Drop all tables and create them before running the tests. We could do the same thing with `alembic`. Shown below is how it's done using `sqlalchemy`.
+
+```python
+@pytest.fixture
+def client():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    yield TestClient(app)
+```

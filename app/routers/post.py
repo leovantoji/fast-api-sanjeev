@@ -66,7 +66,6 @@ def get_post(
         .first()
     )
 
-    print(post)
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -125,7 +124,7 @@ def delete_post(
             detail="Not authorised to perform requested action",
         )
 
-    post_query.delete(synchronize_db=False)
+    post_query.delete(synchronize_session=False)
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -165,7 +164,7 @@ def update_post(
             detail="Not authorised to perform requested action",
         )
 
-    post_query.update(post.model_dump(), synchronize_db=False)
+    post_query.update(post.model_dump(), synchronize_session=False)
     db.commit()
 
     return post_query.first()

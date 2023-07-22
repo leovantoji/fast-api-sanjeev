@@ -19,7 +19,7 @@ from .database import get_db
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-def create_access_token(data: Dict, expires_delta: timedelta | None = None):
+def create_access_token(data: Dict, expires_delta: timedelta = None):
     to_encode = data.copy()
 
     if expires_delta:
