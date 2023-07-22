@@ -847,3 +847,26 @@ def client():
     Base.metadata.create_all(bind=engine)
     yield TestClient(app)
 ```
+
+## Section 17: CI/CD
+
+**Continuous Integration** - automated process to build, package and test applications. **Continuous Delivery** - automated process to deploy applications to production.
+
+|Manual|Automated CI/CD|
+|:-:|:-:|
+|<img src="images/manual.png" width=250>|<img src="images/cicd.png" width=800>|
+
+Common CI/CD Tools:
+
+- [![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
+- [![Jenkins](https://img.shields.io/badge/jenkins-%232C5263.svg?style=for-the-badge&logo=jenkins&logoColor=white)](https://www.jenkins.io/)
+- [![TravisCI](https://img.shields.io/badge/travis%20ci-%232B2F33.svg?style=for-the-badge&logo=travis&logoColor=white)](https://www.travis-ci.com/)
+- [![CircleCI](https://img.shields.io/badge/circle%20ci-%23161616.svg?style=for-the-badge&logo=circleci&logoColor=white)](https://circleci.com/)
+- [![TeamCity](https://img.shields.io/badge/teamcity-000000.svg?style=for-the-badge&logo=teamcity&logoColor=white)](https://www.jetbrains.com/teamcity/)
+
+What **does a CI/CD tool do**?
+
+- It provides a runner, which is just a VM that can run a bunch of commands we specify.
+- These commands are either usually configured in a YAML/JSON file or through a GUI.
+- The different steps/commands we provide make up all of the actions our pipeline perform.
+- The pipeline will be triggered based on some events (e.g. push to a branch, pull request, etc.).
